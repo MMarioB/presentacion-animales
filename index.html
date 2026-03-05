@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animals in English!</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden}
+body{font-family:'Nunito','Segoe UI',Tahoma,sans-serif;background:#1a1a2e;user-select:none}
+.slides-wrapper{width:100vw;height:100vh;position:relative;overflow:hidden}
+.slide{position:absolute;top:0;left:0;width:100vw;height:100vh;display:none;align-items:center;justify-content:center;overflow:hidden}
+.slide.active{display:flex}
+.nav-bar{position:fixed;bottom:0;left:0;right:0;height:56px;background:rgba(20,20,40,.94);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;gap:12px;z-index:999;border-top:2px solid rgba(255,255,255,.06)}
+.nav-btn{width:46px;height:40px;border:none;border-radius:10px;background:rgba(255,255,255,.1);color:#fff;font-size:18px;cursor:pointer;transition:all .2s}
+.nav-btn:hover{background:rgba(255,255,255,.2);transform:scale(1.08)}
+.nav-btn:disabled{opacity:.25;cursor:default;transform:none}
+.dot-nav{display:flex;gap:5px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2);transition:all .3s;cursor:pointer}
+.dot.active{background:#FFD166;width:20px;border-radius:4px}
+.title-slide{background:linear-gradient(135deg,#667eea 0%,#764ba2 50%,#f093fb 100%);flex-direction:column;position:relative}
+.title-slide::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(255,209,102,.3) 0%,transparent 40%),radial-gradient(circle at 85% 75%,rgba(6,214,160,.25) 0%,transparent 35%)}
+.floating-animals{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.floating-animal{position:absolute;animation:floatA 7s ease-in-out infinite;opacity:.12;border-radius:50%;overflow:hidden}
+.floating-animal img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+@keyframes floatA{0%,100%{transform:translateY(0) rotate(0)}33%{transform:translateY(-18px) rotate(5deg)}66%{transform:translateY(-8px) rotate(-4deg)}}
+.title-content{position:relative;z-index:2;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;animation:fadeUp .8s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.title-badge{background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.2);padding:6px 22px;border-radius:40px;color:rgba(255,255,255,.9);font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+.title-main{font-family:'Fredoka One',cursive;font-size:clamp(52px,10vw,110px);color:#fff;text-shadow:0 4px 30px rgba(0,0,0,.2);line-height:1}
+.title-sub{font-family:'Baloo 2',cursive;font-size:clamp(22px,4vw,42px);color:#FFD166}
+.title-imgs{display:flex;gap:8px;margin-top:6px}
+.title-imgs img{width:clamp(40px,6vw,65px);height:clamp(40px,6vw,65px);border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.3);animation:bounce 2s ease-in-out infinite;cursor:pointer;transition:transform .2s}
+.title-imgs img:hover{transform:scale(1.2)}
+.title-imgs img:nth-child(2){animation-delay:.12s}.title-imgs img:nth-child(3){animation-delay:.24s}.title-imgs img:nth-child(4){animation-delay:.36s}.title-imgs img:nth-child(5){animation-delay:.48s}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.start-btn{margin-top:16px;padding:14px 44px;border:none;border-radius:50px;background:#FFD166;color:#1a1a2e;font-family:'Fredoka One',cursive;font-size:clamp(18px,3vw,26px);cursor:pointer;box-shadow:0 4px 20px rgba(255,209,102,.4);transition:all .25s;animation:pulse 2s ease-in-out 1s infinite}
+.start-btn:hover{transform:scale(1.08);box-shadow:0 6px 30px rgba(255,209,102,.6)}
+@keyframes pulse{0%,100%{box-shadow:0 4px 20px rgba(255,209,102,.4)}50%{box-shadow:0 4px 35px rgba(255,209,102,.7)}}
+.animal-slide{flex-direction:column;padding:20px;padding-bottom:72px;position:relative}
+.animal-bg-dots{position:absolute;inset:0;opacity:.04;background-size:50px 50px;background-image:radial-gradient(circle,currentColor 4px,transparent 4px)}
+.animal-content{position:relative;z-index:2;width:100%;max-width:1100px;height:calc(100vh - 96px);display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center}
+.animal-left{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.animal-circle{width:min(340px,38vw);height:min(340px,38vw);border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 12px 50px rgba(0,0,0,.12)}
+.animal-circle img{width:72%;height:72%;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.2))}
+.riddle-overlay{position:absolute;inset:0;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);transition:all .6s cubic-bezier(.4,0,.2,1);cursor:pointer;z-index:5}
+.riddle-overlay.revealed{opacity:0;transform:scale(.4) rotate(20deg);pointer-events:none}
+.riddle-emoji{font-size:clamp(34px,5vw,58px);margin-bottom:6px}
+.riddle-text{font-family:'Fredoka One',cursive;font-size:clamp(12px,1.8vw,19px);color:#333;text-align:center;padding:0 16px;line-height:1.35}
+.riddle-hint{font-size:12px;color:#aaa;margin-top:10px;font-weight:700;animation:pulse2 1.5s ease-in-out infinite}
+@keyframes pulse2{0%,100%{opacity:.5}50%{opacity:1}}
+.sound-btn{padding:10px 26px;border:none;border-radius:50px;font-family:'Fredoka One',cursive;font-size:clamp(14px,1.8vw,19px);cursor:pointer;color:#fff;display:flex;align-items:center;gap:8px;box-shadow:0 4px 14px rgba(0,0,0,.2);transition:all .4s;opacity:0;transform:translateY(16px)}
+.sound-btn.show{opacity:1;transform:translateY(0)}
+.sound-btn:hover{transform:scale(1.06) translateY(-2px)}
+.sound-btn.playing .sp-icon{animation:spP .35s ease infinite}
+@keyframes spP{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+.animal-right{display:flex;flex-direction:column;gap:12px}
+.anim-item{opacity:0;transform:translateX(35px);transition:all .55s cubic-bezier(.4,0,.2,1)}
+.anim-item.show{opacity:1;transform:translateX(0)}
+.animal-name-en{font-family:'Fredoka One',cursive;font-size:clamp(42px,7vw,78px);line-height:1}
+.animal-name-es{font-family:'Baloo 2',cursive;font-size:clamp(17px,2.8vw,26px);opacity:.7}
+.info-card{border-radius:18px;padding:14px 18px}
+.info-card.sound-card{background:rgba(255,255,255,.15);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.12)}
+.info-card.fact-card{background:rgba(0,0,0,.1);border:1px solid rgba(255,255,255,.06)}
+.card-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2px;opacity:.55;margin-bottom:2px}
+.card-value{font-family:'Fredoka One',cursive;font-size:clamp(20px,3.2vw,34px)}
+.fact-text{font-size:clamp(13px,1.7vw,18px);font-weight:700;line-height:1.45}
+.quiz-slide{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);flex-direction:column;padding:20px;padding-bottom:72px;position:relative}
+.quiz-slide::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(255,209,102,.07) 0%,transparent 40%),radial-gradient(circle at 80% 70%,rgba(6,214,160,.07) 0%,transparent 40%)}
+.quiz-content{position:relative;z-index:2;text-align:center;width:100%;max-width:880px}
+.quiz-title{font-family:'Fredoka One',cursive;font-size:clamp(26px,4.5vw,46px);color:#FFD166;margin-bottom:2px}
+.quiz-subtitle{color:rgba(255,255,255,.5);font-weight:700;font-size:clamp(12px,1.6vw,17px);margin-bottom:18px}
+.quiz-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+.quiz-card{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.1);border-radius:16px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;min-height:90px;transition:all .35s}
+.quiz-card img{width:clamp(40px,6.5vw,64px);height:clamp(40px,6.5vw,64px);object-fit:contain;transition:all .4s}
+.quiz-card-name{font-family:'Fredoka One',cursive;font-size:clamp(9px,1.3vw,14px);color:#fff;transition:all .4s}
+.quiz-card.hidden-card img,.quiz-card.hidden-card .quiz-card-name{opacity:0;transform:scale(.3)}
+.quiz-card.hidden-card{background:rgba(255,60,60,.12);border-color:rgba(255,60,60,.3);animation:gP 2s ease-in-out infinite}
+.quiz-card.hidden-card::after{content:'?';position:absolute;font-family:'Fredoka One',cursive;font-size:clamp(22px,3.5vw,40px);color:rgba(255,255,255,.35);animation:bounce 1.5s ease-in-out infinite}
+.quiz-card.found{background:rgba(6,214,160,.2);border-color:rgba(6,214,160,.5)}
+.quiz-card.found img{opacity:1;transform:scale(1);animation:popIn .5s cubic-bezier(.175,.885,.32,1.275)}
+.quiz-card.found .quiz-card-name{opacity:1;transform:scale(1)}
+@keyframes gP{0%,100%{box-shadow:0 0 0 0 rgba(255,60,60,0)}50%{box-shadow:0 0 18px 3px rgba(255,60,60,.12)}}
+@keyframes popIn{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+.quiz-options{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.quiz-opt{padding:9px 20px;border:2px solid rgba(255,255,255,.15);border-radius:12px;background:rgba(255,255,255,.06);color:#fff;font-family:'Fredoka One',cursive;font-size:clamp(12px,1.6vw,16px);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:6px}
+.quiz-opt img{width:24px;height:24px;object-fit:contain;border-radius:50%}
+.quiz-opt:hover{background:rgba(255,255,255,.14);transform:scale(1.05)}
+.quiz-opt.correct{background:rgba(6,214,160,.3)!important;border-color:#06D6A0!important;animation:popIn .4s}
+.quiz-opt.wrong{background:rgba(255,60,60,.3)!important;border-color:#ff3c3c!important;animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.quiz-msg{font-family:'Fredoka One',cursive;font-size:clamp(15px,2.2vw,24px);min-height:34px;margin-top:8px;color:#06D6A0}
+.quiz-score{color:rgba(255,255,255,.4);font-weight:700;font-size:12px;margin-top:4px}
+.end-slide{background:linear-gradient(135deg,#06D6A0 0%,#1B9AAA 50%,#0B5D6F 100%);flex-direction:column;position:relative}
+.end-slide::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.12) 0%,transparent 40%),radial-gradient(circle at 70% 80%,rgba(255,209,102,.1) 0%,transparent 40%)}
+.confetti-box{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.confetti-bit{position:absolute;top:-20px;animation:cFall linear infinite}
+@keyframes cFall{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:.3}}
+.end-content{position:relative;z-index:2;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;animation:fadeUp .8s ease}
+.end-trophy{font-size:clamp(48px,10vw,90px)}
+.end-title{font-family:'Fredoka One',cursive;font-size:clamp(36px,8vw,72px);color:#fff;text-shadow:0 4px 30px rgba(0,0,0,.2)}
+.end-sub{font-family:'Baloo 2',cursive;font-size:clamp(18px,3.5vw,32px);color:#FFD166}
+.end-animals{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.end-animals img{width:clamp(32px,5vw,52px);height:clamp(32px,5vw,52px);object-fit:contain;border-radius:50%;border:2px solid rgba(255,255,255,.3);animation:bounce 2s ease-in-out infinite}
+.replay-btn{margin-top:12px;padding:12px 36px;border:2px solid rgba(255,255,255,.3);border-radius:50px;background:rgba(255,255,255,.1);color:#fff;font-family:'Fredoka One',cursive;font-size:clamp(14px,2vw,20px);cursor:pointer;transition:all .25s}
+.replay-btn:hover{background:rgba(255,255,255,.2);transform:scale(1.05)}
+@media(max-width:768px){.animal-content{grid-template-columns:1fr;gap:8px}.animal-circle{width:min(160px,42vw);height:min(160px,42vw)}.animal-left{flex-direction:row;gap:10px}}
+</style>
+</head>
+<body>
+<div class="slides-wrapper" id="app"></div>
+<div class="nav-bar"><button class="nav-btn" id="prevBtn">&#9664;</button><div class="dot-nav" id="dotNav"></div><button class="nav-btn" id="nextBtn">&#9654;</button></div>
+<script>
+// ============================================================
+//  IMAGES: Create an "img/" folder next to this HTML with:
+//    vaca.png, leon.png, delfin.png, elefante.png, gallina.png,
+//    mono.png, tortuga.png, pinguino.png, caballo.png, tiburon.png
+// ============================================================
+var IMG='img/';
+
+// === SOUNDS ===
+var audioCtx=null;
+function ctx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext);return audioCtx}
+function noise(c,dur,vol){var n=c.createBufferSource(),b=c.createBuffer(1,c.sampleRate*dur,c.sampleRate),d=b.getChannelData(0);for(var i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*vol;n.buffer=b;return n}
+
+var soundFns={
+  cow:function(c,t){for(var i=0;i<2;i++){var s=t+i*.8,o=c.createOscillator(),o2=c.createOscillator(),g=c.createGain();o.type='sawtooth';o.frequency.setValueAtTime(165,s);o.frequency.linearRampToValueAtTime(140,s+.3);o.frequency.linearRampToValueAtTime(120,s+.6);o2.type='triangle';o2.frequency.setValueAtTime(330,s);o2.frequency.linearRampToValueAtTime(240,s+.6);var g2=c.createGain();g2.gain.value=.08;g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(.28,s+.04);g.gain.setValueAtTime(.22,s+.35);g.gain.linearRampToValueAtTime(0,s+.65);o.connect(g).connect(c.destination);o2.connect(g2).connect(g);o.start(s);o.stop(s+.7);o2.start(s);o2.stop(s+.7)}},
+  lion:function(c,t){var o=c.createOscillator(),o2=c.createOscillator(),g=c.createGain(),g2=c.createGain();o.type='sawtooth';o.frequency.setValueAtTime(85,t);o.frequency.linearRampToValueAtTime(150,t+.25);o.frequency.setValueAtTime(140,t+.5);o.frequency.linearRampToValueAtTime(75,t+1.2);o2.type='sawtooth';o2.frequency.setValueAtTime(170,t);o2.frequency.linearRampToValueAtTime(300,t+.25);o2.frequency.linearRampToValueAtTime(150,t+1.2);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.3,t+.08);g.gain.setValueAtTime(.28,t+.6);g.gain.linearRampToValueAtTime(0,t+1.3);g2.gain.value=.1;var n=noise(c,1.3,.03),ng=c.createGain();ng.gain.value=.4;o.connect(g).connect(c.destination);o2.connect(g2).connect(g);n.connect(ng).connect(g);o.start(t);o.stop(t+1.4);o2.start(t);o2.stop(t+1.4);n.start(t);n.stop(t+1.4)},
+  dolphin:function(c,t){for(var i=0;i<5;i++){var s=t+i*.16,o=c.createOscillator(),g=c.createGain();o.type='sine';var f1=800+Math.random()*600,f2=f1+400+Math.random()*400;o.frequency.setValueAtTime(f1,s);o.frequency.linearRampToValueAtTime(f2,s+.04);o.frequency.linearRampToValueAtTime(f1-200,s+.1);g.gain.setValueAtTime(.12,s);g.gain.linearRampToValueAtTime(0,s+.12);o.connect(g).connect(c.destination);o.start(s);o.stop(s+.13)}},
+  elephant:function(c,t){var o=c.createOscillator(),o2=c.createOscillator(),g=c.createGain();o.type='sawtooth';o.frequency.setValueAtTime(180,t);o.frequency.linearRampToValueAtTime(520,t+.2);o.frequency.setValueAtTime(500,t+.4);o.frequency.linearRampToValueAtTime(600,t+.6);o.frequency.linearRampToValueAtTime(300,t+1);o2.type='square';o2.frequency.setValueAtTime(360,t);o2.frequency.linearRampToValueAtTime(1040,t+.2);o2.frequency.linearRampToValueAtTime(600,t+1);var g2=c.createGain();g2.gain.value=.04;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.22,t+.05);g.gain.setValueAtTime(.2,t+.5);g.gain.linearRampToValueAtTime(0,t+1.1);o.connect(g).connect(c.destination);o2.connect(g2).connect(g);o.start(t);o.stop(t+1.2);o2.start(t);o2.stop(t+1.2)},
+  chicken:function(c,t){for(var i=0;i<4;i++){var s=t+i*.22,o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.setValueAtTime(420+Math.random()*40,s);o.frequency.linearRampToValueAtTime(340,s+.08);o.frequency.linearRampToValueAtTime(380,s+.14);g.gain.setValueAtTime(.12,s);g.gain.linearRampToValueAtTime(.08,s+.06);g.gain.linearRampToValueAtTime(0,s+.16);o.connect(g).connect(c.destination);o.start(s);o.stop(s+.17)}},
+  monkey:function(c,t){for(var i=0;i<5;i++){var s=t+i*.15,o=c.createOscillator(),g=c.createGain();o.type='triangle';var hi=i%2===0;o.frequency.setValueAtTime(hi?500:300,s);o.frequency.linearRampToValueAtTime(hi?700:450,s+.04);o.frequency.linearRampToValueAtTime(hi?400:250,s+.1);g.gain.setValueAtTime(.14,s);g.gain.linearRampToValueAtTime(0,s+.11);o.connect(g).connect(c.destination);o.start(s);o.stop(s+.12)}},
+  turtle:function(c,t){var o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(280,t);o.frequency.linearRampToValueAtTime(180,t+1);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.04,t+.1);g.gain.linearRampToValueAtTime(0,t+1);var n=noise(c,1,.01),ng=c.createGain();ng.gain.value=.3;o.connect(g).connect(c.destination);n.connect(ng).connect(g);o.start(t);o.stop(t+1.1);n.start(t);n.stop(t+1.1)},
+  penguin:function(c,t){for(var i=0;i<3;i++){var s=t+i*.3,o=c.createOscillator(),o2=c.createOscillator(),g=c.createGain();o.type='square';o.frequency.setValueAtTime(480,s);o.frequency.linearRampToValueAtTime(380,s+.1);o.frequency.linearRampToValueAtTime(520,s+.2);o2.type='sine';o2.frequency.setValueAtTime(960,s);o2.frequency.linearRampToValueAtTime(760,s+.1);var g2=c.createGain();g2.gain.value=.03;g.gain.setValueAtTime(.06,s);g.gain.linearRampToValueAtTime(.1,s+.08);g.gain.linearRampToValueAtTime(0,s+.22);o.connect(g).connect(c.destination);o2.connect(g2).connect(g);o.start(s);o.stop(s+.24);o2.start(s);o2.stop(s+.24)}},
+  horse:function(c,t){var o=c.createOscillator(),o2=c.createOscillator(),g=c.createGain();o.type='sawtooth';o.frequency.setValueAtTime(220,t);o.frequency.linearRampToValueAtTime(450,t+.1);o.frequency.setValueAtTime(420,t+.2);o.frequency.linearRampToValueAtTime(350,t+.5);o.frequency.linearRampToValueAtTime(280,t+.8);o2.type='triangle';o2.frequency.setValueAtTime(440,t);o2.frequency.linearRampToValueAtTime(900,t+.1);o2.frequency.linearRampToValueAtTime(560,t+.8);var g2=c.createGain();g2.gain.value=.06;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.2,t+.04);g.gain.setValueAtTime(.16,t+.3);g.gain.linearRampToValueAtTime(0,t+.85);o.connect(g).connect(c.destination);o2.connect(g2).connect(g);o.start(t);o.stop(t+.9);o2.start(t);o2.stop(t+.9)},
+  shark:function(c,t){var o=c.createOscillator(),g=c.createGain(),l=c.createOscillator(),lg=c.createGain();o.type='sine';o.frequency.setValueAtTime(55,t);o.frequency.linearRampToValueAtTime(35,t+2);l.frequency.setValueAtTime(2,t);lg.gain.setValueAtTime(8,t);l.connect(lg).connect(o.frequency);var n=noise(c,2,.02),ng=c.createGain();ng.gain.value=.5;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.12,t+.2);g.gain.linearRampToValueAtTime(0,t+2);o.connect(g).connect(c.destination);n.connect(ng).connect(g);o.start(t);o.stop(t+2.1);l.start(t);l.stop(t+2.1);n.start(t);n.stop(t+2.1)}
+};
+function playSound(id){var c=ctx();soundFns[id](c,c.currentTime)}
+function playCorrect(){var c=ctx(),t=c.currentTime;[523.25,659.25,783.99].forEach(function(f,i){var o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.15,t+i*.12);g.gain.linearRampToValueAtTime(0,t+i*.12+.3);o.connect(g).connect(c.destination);o.start(t+i*.12);o.stop(t+i*.12+.35)})}
+function playWrong(){var c=ctx(),t=c.currentTime,o=c.createOscillator(),g=c.createGain();o.type='square';o.frequency.setValueAtTime(200,t);o.frequency.linearRampToValueAtTime(150,t+.2);g.gain.setValueAtTime(.08,t);g.gain.linearRampToValueAtTime(0,t+.25);o.connect(g).connect(c.destination);o.start(t);o.stop(t+.3)}
+
+// === DATA ===
+var A=[
+  {id:'cow',en:'COW',es:'Vaca',sound:'Moo! Moo!',fact:'Cows have best friends and get sad when apart!',riddle:'I give you milk every day and live on a farm. What am I?',file:'vaca.png',col:{bg:'#d4edda',acc:'#28a745',txt:'#155724',circ:'#a3d9a5'}},
+  {id:'lion',en:'LION',es:'Le\u00f3n',sound:'Roar! Roar!',fact:"A lion's roar can be heard 8 km away!",riddle:'I am the king of the jungle with a big mane. What am I?',file:'leon.png',col:{bg:'#fff3e0',acc:'#e65100',txt:'#bf360c',circ:'#ffcc80'}},
+  {id:'dolphin',en:'DOLPHIN',es:'Delf\u00edn',sound:'Click! Click!',fact:'Dolphins sleep with one eye open!',riddle:'I jump in the ocean and I am very smart. What am I?',file:'delfin.png',col:{bg:'#e1f5fe',acc:'#0277bd',txt:'#01579b',circ:'#81d4fa'}},
+  {id:'elephant',en:'ELEPHANT',es:'Elefante',sound:'Pawoo!',fact:"Elephants are the only animals that can't jump!",riddle:'I have a very long nose and big ears. What am I?',file:'elefante.png',col:{bg:'#ede7f6',acc:'#5e35b1',txt:'#311b92',circ:'#b39ddb'}},
+  {id:'chicken',en:'CHICKEN',es:'Gallina',sound:'Cluck! Cluck!',fact:'Chickens can remember over 100 faces!',riddle:'I live on a farm and lay eggs. What am I?',file:'gallina.png',col:{bg:'#fffde7',acc:'#f9a825',txt:'#f57f17',circ:'#fff59d'}},
+  {id:'monkey',en:'MONKEY',es:'Mono',sound:'Ooh ooh! Ah ah!',fact:'Monkeys peel bananas and never eat the skin!',riddle:'I love bananas and swing from trees. What am I?',file:'mono.png',col:{bg:'#fbe9e7',acc:'#d84315',txt:'#bf360c',circ:'#ffab91'}},
+  {id:'turtle',en:'TURTLE',es:'Tortuga',sound:'...Shhh! (quiet)',fact:'Turtles have been on Earth for 200 million years!',riddle:'I carry my house on my back and walk slowly. What am I?',file:'tortuga.png',col:{bg:'#e8f5e9',acc:'#2e7d32',txt:'#1b5e20',circ:'#a5d6a7'}},
+  {id:'penguin',en:'PENGUIN',es:'Ping\u00fcino',sound:'Honk! Honk!',fact:'Penguins propose with a pebble!',riddle:'I wear a tuxedo but cannot fly. What am I?',file:'pinguino.png',col:{bg:'#e3f2fd',acc:'#1565c0',txt:'#0d47a1',circ:'#90caf9'}},
+  {id:'horse',en:'HORSE',es:'Caballo',sound:'Neigh! Neigh!',fact:'Horses can sleep standing up!',riddle:'You can ride me and I run very fast. What am I?',file:'caballo.png',col:{bg:'#fff8e1',acc:'#ff8f00',txt:'#e65100',circ:'#ffe082'}},
+  {id:'shark',en:'SHARK',es:'Tibur\u00f3n',sound:'Dun dun...',fact:'Sharks have been around longer than trees!',riddle:'I have sharp teeth and swim in the deep ocean. What am I?',file:'tiburon.png',col:{bg:'#eceff1',acc:'#455a64',txt:'#263238',circ:'#b0bec5'}}
+];
+
+var TOTAL=A.length+3,cur=0,quizScore=0,hiddenAnimal=null;
+function mkEl(t,c){var e=document.createElement(t);if(c)e.className=c;return e}
+function mkImg(f){var im=new Image();im.src=IMG+f;return im}
+
+function init(){
+  var app=document.getElementById('app'),dots=document.getElementById('dotNav');
+
+  // TITLE
+  var s0=mkEl('div','slide title-slide active');s0.id='slide-0';
+  var fl=mkEl('div','floating-animals');
+  var fP=[[5,8],[82,5],[12,72],[88,68],[45,4],[65,78],[25,40],[78,38],[50,65],[8,30]];
+  A.forEach(function(a,i){var f=mkEl('div','floating-animal');f.style.cssText='left:'+fP[i][0]+'%;top:'+fP[i][1]+'%;animation-delay:'+i*.6+'s;width:'+(50+Math.random()*30)+'px;height:'+(50+Math.random()*30)+'px';f.appendChild(mkImg(a.file));fl.appendChild(f)});
+  s0.appendChild(fl);
+  var tc=mkEl('div','title-content');tc.innerHTML='<div class="title-badge">English Class</div><div class="title-main">ANIMALS</div><div class="title-sub">in English!</div>';
+  var ti=mkEl('div','title-imgs');[0,1,3,7,9].forEach(function(idx,i){var im=mkImg(A[idx].file);im.style.animationDelay=i*.12+'s';ti.appendChild(im)});tc.appendChild(ti);
+  var sb=mkEl('button','start-btn');sb.textContent="Let's Go! \u2192";sb.onclick=function(){go(1)};tc.appendChild(sb);
+  s0.appendChild(tc);app.appendChild(s0);
+
+  // ANIMALS
+  A.forEach(function(a,i){
+    var s=mkEl('div','slide animal-slide');s.id='slide-'+(i+1);s.style.cssText='background:'+a.col.bg+';color:'+a.col.txt;
+    var bg=mkEl('div','animal-bg-dots');bg.style.color=a.col.acc;s.appendChild(bg);
+    var content=mkEl('div','animal-content');
+    var left=mkEl('div','animal-left');
+    var circle=mkEl('div','animal-circle');circle.style.background=a.col.circ;circle.appendChild(mkImg(a.file));
+    var riddle=mkEl('div','riddle-overlay');riddle.id='riddle-'+a.id;
+    riddle.innerHTML='<div class="riddle-emoji">\u2753</div><div class="riddle-text">'+a.riddle+'</div><div class="riddle-hint">\uD83D\uDC46 Tap to reveal!</div>';
+    riddle.onclick=(function(aid){return function(){reveal(aid)}})(a.id);
+    circle.appendChild(riddle);left.appendChild(circle);
+    var btn=mkEl('button','sound-btn');btn.id='sbtn-'+a.id;btn.style.background=a.col.acc;
+    btn.innerHTML='<span class="sp-icon">\uD83D\uDD0A</span> '+a.sound;
+    btn.onclick=(function(aid,b){return function(){b.classList.add('playing');playSound(aid);setTimeout(function(){b.classList.remove('playing')},1200)}})(a.id,btn);
+    left.appendChild(btn);content.appendChild(left);
+    var right=mkEl('div','animal-right');
+    right.innerHTML='<div class="animal-name-en anim-item" style="color:'+a.col.acc+'">'+a.en+'</div><div class="animal-name-es anim-item" style="color:'+a.col.txt+'">'+a.es+'</div><div class="info-card sound-card anim-item"><div class="card-label" style="color:'+a.col.txt+'">\uD83D\uDD0A Sound</div><div class="card-value" style="color:'+a.col.acc+'">'+a.sound+'</div></div><div class="info-card fact-card anim-item"><div class="card-label" style="color:'+a.col.acc+'">\u2B50 Fun Fact!</div><div class="fact-text">'+a.fact+'</div></div>';
+    content.appendChild(right);s.appendChild(content);app.appendChild(s)
+  });
+
+  // QUIZ
+  var qs=mkEl('div','slide quiz-slide');qs.id='slide-'+(A.length+1);
+  qs.innerHTML='<div class="quiz-content"><div class="quiz-title">\uD83E\uDDE9 What Animal is Missing?</div><div class="quiz-subtitle">One animal will disappear \u2014 can you find it?</div><div class="quiz-grid" id="qGrid"></div><div class="quiz-options" id="qOpts"></div><div class="quiz-msg" id="qMsg"></div><div class="quiz-score" id="qScore"></div></div>';
+  app.appendChild(qs);
+
+  // END
+  var es=mkEl('div','slide end-slide');es.id='slide-'+(A.length+2);
+  var cb=mkEl('div','confetti-box');var cols=['#FFD166','#06D6A0','#EF476F','#118AB2','#FFB4A2','#8338EC'];
+  for(var i=0;i<35;i++){var c=mkEl('div','confetti-bit');c.style.cssText='left:'+Math.random()*100+'%;width:'+(6+Math.random()*10)+'px;height:'+(6+Math.random()*10)+'px;background:'+cols[i%6]+';animation-delay:'+Math.random()*4+'s;animation-duration:'+(3+Math.random()*3)+'s;border-radius:'+(Math.random()>.5?'50%':'2px');cb.appendChild(c)}
+  es.appendChild(cb);
+  var ec=mkEl('div','end-content');ec.innerHTML='<div class="end-trophy">\uD83C\uDFC6</div><div class="end-title">Great Job!</div><div class="end-sub">\u00a1Buen trabajo!</div>';
+  var ea=mkEl('div','end-animals');A.forEach(function(a,i){var im=mkImg(a.file);im.style.animationDelay=i*.12+'s';ea.appendChild(im)});ec.appendChild(ea);
+  var et=mkEl('div','');et.style.cssText='color:rgba(255,255,255,.8);font-weight:700;font-size:clamp(14px,2vw,18px);margin-top:6px';et.innerHTML='Now you know <strong>10 animals</strong> in English!';ec.appendChild(et);
+  var rb=mkEl('button','replay-btn');rb.textContent='\uD83D\uDD04 Play Again!';rb.onclick=function(){go(0)};ec.appendChild(rb);
+  es.appendChild(ec);app.appendChild(es);
+
+  // DOTS
+  for(var i=0;i<TOTAL;i++){var d=mkEl('div','dot'+(i===0?' active':''));d.onclick=(function(n){return function(){go(n)}})(i);dots.appendChild(d)}
+  document.getElementById('prevBtn').onclick=function(){if(cur>0)go(cur-1)};
+  document.getElementById('nextBtn').onclick=function(){if(cur<TOTAL-1)go(cur+1)};
+  document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();if(cur<TOTAL-1)go(cur+1)}if(e.key==='ArrowLeft'){e.preventDefault();if(cur>0)go(cur-1)}});
+}
+
+function go(n){
+  cur=n;
+  var slides=document.querySelectorAll('.slide');for(var i=0;i<slides.length;i++)slides[i].classList.toggle('active',i===n);
+  var dots=document.querySelectorAll('.dot');for(var i=0;i<dots.length;i++)dots[i].classList.toggle('active',i===n);
+  document.getElementById('prevBtn').disabled=n===0;document.getElementById('nextBtn').disabled=n===TOTAL-1;
+  if(n>=1&&n<=A.length){var a=A[n-1],r=document.getElementById('riddle-'+a.id);if(r)r.classList.remove('revealed');var sb=document.getElementById('sbtn-'+a.id);if(sb)sb.classList.remove('show');var items=document.querySelectorAll('#slide-'+n+' .anim-item');for(var j=0;j<items.length;j++)items[j].classList.remove('show')}
+  if(n===A.length+1)startQuiz();
+}
+
+function reveal(id){
+  document.getElementById('riddle-'+id).classList.add('revealed');
+  var idx=-1;for(var i=0;i<A.length;i++){if(A[i].id===id){idx=i;break}}
+  setTimeout(function(){var items=document.querySelectorAll('#slide-'+(idx+1)+' .anim-item');for(var j=0;j<items.length;j++){(function(el,d){setTimeout(function(){el.classList.add('show')},d)})(items[j],j*120)}setTimeout(function(){document.getElementById('sbtn-'+id).classList.add('show')},items.length*120)},200);
+  setTimeout(function(){playSound(id)},600);
+}
+
+function startQuiz(){
+  var grid=document.getElementById('qGrid'),opts=document.getElementById('qOpts'),msg=document.getElementById('qMsg'),score=document.getElementById('qScore');
+  var hi=Math.floor(Math.random()*A.length);hiddenAnimal=A[hi];
+  var html='';for(var i=0;i<A.length;i++){html+='<div class="quiz-card '+(i===hi?'hidden-card':'')+'" id="qc-'+A[i].id+'"><img src="'+IMG+A[i].file+'"><div class="quiz-card-name">'+A[i].en+'</div></div>'}
+  grid.innerHTML=html;
+  var wrong=A.filter(function(_,i){return i!==hi}).sort(function(){return Math.random()-.5}).slice(0,2);
+  var all=[hiddenAnimal].concat(wrong).sort(function(){return Math.random()-.5});
+  opts.innerHTML=all.map(function(a){return '<button class="quiz-opt" data-aid="'+a.id+'"><img src="'+IMG+a.file+'"> '+a.en+'</button>'}).join('');
+  var qbtns=document.querySelectorAll('.quiz-opt');for(var qi=0;qi<qbtns.length;qi++){qbtns[qi].onclick=(function(b){return function(){checkQ(b.getAttribute('data-aid'))}})(qbtns[qi])}
+  msg.textContent='';score.textContent=quizScore>0?'Score: '+quizScore+' \u2B50':'';
+}
+
+function checkQ(id){
+  var msg=document.getElementById('qMsg'),btns=document.querySelectorAll('.quiz-opt');
+  if(id===hiddenAnimal.id){
+    quizScore++;playCorrect();
+    for(var i=0;i<btns.length;i++){if(btns[i].textContent.indexOf(hiddenAnimal.en)!==-1)btns[i].classList.add('correct');btns[i].disabled=true}
+    var card=document.getElementById('qc-'+hiddenAnimal.id);card.classList.remove('hidden-card');card.classList.add('found');
+    var cheers=['Amazing! \uD83C\uDF89','You got it! \uD83C\uDF1F','Brilliant! \uD83E\uDDE0','Super! \uD83D\uDCAA','Awesome! \uD83D\uDD25'];
+    msg.textContent=cheers[Math.floor(Math.random()*cheers.length)];msg.style.color='#06D6A0';
+    document.getElementById('qScore').textContent='Score: '+quizScore+' \u2B50';setTimeout(startQuiz,2000)
+  }else{
+    playWrong();for(var i=0;i<btns.length;i++){for(var j=0;j<A.length;j++){if(A[j].id===id&&btns[i].textContent.indexOf(A[j].en)!==-1)btns[i].classList.add('wrong')}}
+    msg.textContent='Try again! \uD83E\uDD14';msg.style.color='#EF476F';
+    setTimeout(function(){for(var i=0;i<btns.length;i++)btns[i].classList.remove('wrong');msg.textContent=''},800)
+  }
+}
+
+init();
+</script>
+</body>
+</html>
